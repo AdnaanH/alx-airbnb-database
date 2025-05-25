@@ -9,8 +9,8 @@ LEFT JOIN Booking b ON u.user_id = b.user_id
 GROUP BY u.user_id, u.first_name, u.last_name
 ORDER BY total_bookings DESC;
 
--- 2. Window Function: Rank properties based on total number of bookings
-WITH PropertyBookingCount AS (
+-- 2. Window Function: Rank properties based on total number of bookings using ROW_NUMBER
+WITH PropertyBookingCounts AS (
     SELECT 
         p.property_id,
         p.name AS property_name,
@@ -23,6 +23,5 @@ SELECT
     property_id,
     property_name,
     total_bookings,
-    RANK() OVER (ORDER BY total_bookings DESC) AS booking_rank
-FROM PropertyBookingCount
-ORDER BY booking_rank;
+    ROW_NUMBER() OVER (ORDER BY total_bookings DESC) AS booking_rank
+FROM PropertyBookingCounts;
