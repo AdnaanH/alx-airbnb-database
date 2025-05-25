@@ -41,3 +41,27 @@ This query lists all properties and their corresponding reviews. Properties with
 ### ✅ 3. FULL OUTER JOIN — Get All Users and All Bookings
 
 This query returns every user and every booking, whether or not they are related. Useful for spotting unlinked or orphaned records.
+
+
+
+# SQL Subqueries 
+
+This demonstrates the use of **correlated** and **non-correlated** subqueries in a SQL database, based on the schema for an airbnb clone. The goal is to perform analytical queries involving user activity and property ratings.
+
+## 🎯 Objective
+
+To write SQL queries that:
+1. Use a **non-correlated subquery** to find properties with an average review rating greater than 4.0.
+2. Use a **correlated subquery** to find users who have made **more than 3 bookings**.
+
+## 📄 Query Descriptions
+
+### 1. Non-Correlated Subquery – Top Rated Properties
+This query retrieves all properties that have an average rating greater than 4.0.
+
+The inner query calculates average ratings per property using GROUP BY and HAVING.
+
+### 2. Correlated Subquery – Active Users
+This query identifies users who have made more than three bookings.
+
+The inner query is evaluated per user, making it a correlated subquery.
