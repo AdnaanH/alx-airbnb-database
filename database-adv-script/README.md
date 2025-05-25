@@ -65,3 +65,25 @@ The inner query calculates average ratings per property using GROUP BY and HAVIN
 This query identifies users who have made more than three bookings.
 
 The inner query is evaluated per user, making it a correlated subquery.
+
+# SQL Aggregation and Window Functions – Booking API Project
+
+This showcases SQL queries using **aggregation** and **window functions** to analyze data from a airbnb clone api. These queries help uncover useful insights, such as user engagement and property popularity, directly from the database layer.
+
+## 🎯 Objective
+
+Perform SQL-based analysis using:
+1. **Aggregation** to find how active users are in terms of bookings.
+2. **Window functions** to rank properties by booking volume.
+
+## 📄 Query Descriptions
+
+### 1. Aggregation – Bookings per User
+This query returns each user with the total number of bookings they have made.
+LEFT JOIN ensures users with zero bookings are included.
+Grouped by user_id to compute COUNT per user.
+
+2. Window Function – Property Booking Rank
+This query ranks properties based on how many bookings they have received.
+Uses the RANK() window function over the count of bookings.
+Useful for highlighting the most popular properties.
