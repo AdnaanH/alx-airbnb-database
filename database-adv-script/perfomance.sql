@@ -1,5 +1,5 @@
 -- =============================================
--- 1. Initial Complex Query (Unoptimized)
+-- 1. Initial Complex Query (Unoptimized with WHERE)
 -- =============================================
 
 EXPLAIN ANALYZE
@@ -24,7 +24,11 @@ SELECT
 FROM Booking b
 JOIN "User" u ON b.user_id = u.user_id
 JOIN Property p ON b.property_id = p.property_id
-LEFT JOIN Payment pay ON pay.booking_id = b.booking_id;
+LEFT JOIN Payment pay ON pay.booking_id = b.booking_id
+WHERE b.status = 'confirmed'
+  AND u.role = 'guest'
+  AND p.location = 'Nairobi';
+
 
 -- =============================================
 -- 2. Refactored Query (Optimized)
