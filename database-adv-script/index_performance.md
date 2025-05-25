@@ -1,22 +1,63 @@
--- Additional indexes to improve query performance for Airbnb Clone API
+# Airbnb Clone API - Indexing Strategy
 
--- User Table: already has index on email, good for login/auth lookups
+## Objective
 
--- Property Table
--- Queries frequently filter by location or order by price
-CREATE INDEX idx_property_location ON Property (location);
-CREATE INDEX idx_property_price ON Property (pricepernight);
+This project aims to optimize query performance in the Airbnb Clone API database by creating indexes on frequently queried columns.
 
--- Booking Table
--- Common filters include date range and status
-CREATE INDEX idx_booking_dates ON Booking (start_date, end_date);
-CREATE INDEX idx_booking_status ON Booking (status);
-CREATE INDEX idx_booking_created_at ON Booking (created_at);
+## Schema Overview
 
--- Review Table
--- Often sorted or filtered by created_at for display
-CREATE INDEX idx_review_created_at ON Review (created_at);
+The database contains the following key tables:
+- `User`: Stores user details (guests, hosts, admins).
+- `Property`: Listings created by hosts.
+- `Booking`: Reservations made by users.
+- `Payment`: Transactions tied to bookings.
+- `Review`: User-submitted feedback on properties.
+- `Message`: Direct messages between users.
 
--- Message Table
--- Useful to order messages by sent time between users
-CREATE INDEX idx_message_sent_at ON Message (sent_at);
+## Why Indexing?
+
+Indexing helps the database engine find rows faster. It is especially effective on columns that appear in:
+- `WHERE` clauses
+- `JOIN` conditions
+- `ORDER BY` clauses
+- Aggregations and filters
+
+## Indexing Strategy
+
+The following indexing decisions were made based on anticipated query usage:
+
+### User Table
+- ✅ `email`: Already indexed for quick lookup during authentication.
+
+### Property Table
+- ✅ `host_id`: Already indexed for JOINs with users.
+- ➕ `location`: Often filtered to find properties by region.
+- ➕ `pricepernight`: Used to sort properties by cost.
+
+### Booking Table
+- ✅ `property_id`, `user_id`: Already indexed for filtering user/property bookings.
+- ➕ `(start_date, end_date)`: Optimizes availability checks.
+- ➕ `status`: Helps with filtering confirmed/pending bookings.
+- ➕ `created_at`: Useful for sorting or filtering by booking creation date.
+
+### Payment Table
+- ✅ `booking_id`: Indexed for JOINs with booking details.
+
+### Review Table
+- ✅ `property_id`, `user_id`: Indexed for property and user-specific reviews.
+- ➕ `created_at`: Helps sort reviews chronologically.
+
+### Message Table
+- ✅ `sender_id`, `recipient_id`: Already indexed for filtering conversations.
+- ➕ `sent_at`: Helps sort conversations chronologically.
+
+## Measuring Performance
+
+You can use PostgreSQL’s `EXPLAIN ANALYZE` command to compare query plans before and after applying indexes:
+
+```sql
+-- Example: Finding bookings for a user
+EXPLAIN ANALYZE
+SELECT * FROM Booking
+WHERE user_id = 'some-uuid' AND status = 'confirmed'
+ORDER BY created_at DESC;
